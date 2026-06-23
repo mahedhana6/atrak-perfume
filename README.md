@@ -1,6 +1,6 @@
 # Atrak Parfumeria
 
-A modern responsive perfume store built with Next.js, TypeScript, Tailwind CSS, SQLite for local development, and Prisma.
+A modern responsive perfume store built with Next.js, TypeScript, Tailwind CSS, Neon PostgreSQL, and Prisma.
 
 ## Features
 
@@ -11,14 +11,14 @@ A modern responsive perfume store built with Next.js, TypeScript, Tailwind CSS, 
 - Admin dashboard for adding, editing, deleting, and marking products available or out of stock.
 - Category management for the required perfume, bakhoor, air freshener, and gift set categories.
 - Product image uploads with Vercel Blob support in production and a local development fallback.
-- Prisma schema, SQLite local database, and seed data.
+- Prisma schema, Neon PostgreSQL database, and seed data.
 
 ## Tech Stack
 
 - Next.js App Router
 - TypeScript
 - Tailwind CSS
-- SQLite for local development
+- Neon PostgreSQL
 - Prisma ORM
 - Vercel Blob for persistent production image uploads
 
@@ -36,21 +36,19 @@ npm install
 cp .env.example .env
 ```
 
-3. Update `.env`:
+3. Update `.env` with your Neon connection string:
 
 ```env
-DATABASE_URL="file:./dev.db"
+DATABASE_URL="postgresql://USER:PASSWORD@HOST.neon.tech/DB?sslmode=require"
 ADMIN_EMAIL="admin@atrak.test"
 ADMIN_PASSWORD="choose-a-long-password"
 ADMIN_SESSION_SECRET="replace-with-at-least-32-random-characters"
 ```
 
-The SQLite database file is created at `prisma/dev.db`.
-
-4. Create and seed the database:
+4. Apply migrations and seed the Neon database:
 
 ```bash
-npm run prisma:migrate -- --name init
+npm run prisma:deploy
 npm run db:seed
 ```
 
@@ -65,31 +63,30 @@ Open `http://localhost:3000` for the storefront and `http://localhost:3000/admin
 ## Vercel Deployment
 
 1. Create a Vercel project connected to this repository.
-2. Add a PostgreSQL database, such as Vercel Postgres, Neon, Supabase, or any hosted PostgreSQL provider.
-3. For PostgreSQL production deployments, update the Prisma datasource provider to `postgresql`, set `DATABASE_URL` to your hosted PostgreSQL connection string, and generate production migrations for that database.
-4. Set these environment variables in Vercel:
+2. Create a Neon PostgreSQL database and copy its pooled or direct connection string.
+3. Set these environment variables in Vercel:
 
 ```env
-DATABASE_URL="your-production-postgres-url"
+DATABASE_URL="postgresql://USER:PASSWORD@HOST.neon.tech/DB?sslmode=require"
 ADMIN_EMAIL="your-admin-email"
 ADMIN_PASSWORD="your-strong-admin-password"
 ADMIN_SESSION_SECRET="at-least-32-random-characters"
 BLOB_READ_WRITE_TOKEN="your-vercel-blob-token"
 ```
 
-5. Run production migrations:
+4. Run production migrations against Neon:
 
 ```bash
 npm run prisma:deploy
 ```
 
-6. Seed optional demo products:
+5. Seed optional demo products:
 
 ```bash
 npm run db:seed
 ```
 
-7. Deploy with Vercel. The build command is:
+6. Deploy with Vercel. The build command is:
 
 ```bash
 npm run build

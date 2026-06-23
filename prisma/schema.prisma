@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -21,8 +21,8 @@ model Category {
 model Product {
   id            String         @id @default(cuid())
   name          String
-  description   String
-  price         Float
+  description   String         @db.Text
+  price         Decimal        @db.Decimal(10, 2)
   imageUrl      String         @map("image_url")
   images        ProductImage[]
   stockQuantity Int            @default(0) @map("stock_quantity")
